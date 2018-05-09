@@ -10,7 +10,8 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
     parser.add_argument('papersFile', metavar='file', type=str, help='CSV file with papers to search')
-    parser.add_argument('--scopus', help='CSV file with scorpus exported search results')
+    parser.add_argument('--scopus', help='CSV file with Scorpus exported search results')
+    parser.add_argument('--sciencedirect', help='Text file with ScienceDirect exported results')
     parser.add_argument('--ngrams', dest='ngrams', default=2,help="N-grams to split text to search")
     parser.add_argument('--similatiry', dest='similarity', default=0.85, help="Minimun similarity to compare papers")
 
@@ -29,6 +30,22 @@ if __name__ == '__main__':
             scopusFile = csv.reader(csvfile)
             for paper in scopusFile:
                 G.add(str.lower(paper[1]))
+
+    #if args.sciencedirect:
+    with open(args.sciencedirect) as txtfile:
+
+        isEnded = False
+        while not isEnded:
+            author = txtfile.readline()
+            title = txtfile.readline()
+            G.add(title[:-3].lower())
+            line = txtfile.readline()
+            while line != '\n':
+                if line == '':
+                    isEnded = True
+                    break;
+
+                line = txtfile.readline()
 
     for paper in allPapers:
         sim = G.find(paper)
