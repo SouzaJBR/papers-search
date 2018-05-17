@@ -1,3 +1,4 @@
+#encoding: utf-8
 import csv
 import argparse
 import ngram
@@ -9,7 +10,7 @@ notfoundPapers = []
 
 def normalizeString(string):
 
-    return re.sub('[\"\'.\-\:!?$%#]', '', string.strip().lower())
+    return re.sub('[^a-zA-Z0-9\s]', '', string.strip().lower())
 
 def loadPapers():
     with open('papers.csv') as papersfile:
@@ -86,8 +87,9 @@ if __name__ == '__main__':
     parser.add_argument('papersFile', metavar='file', type=str, help='CSV file with papers to search')
     parser.add_argument('--scopus', help='CSV file with Scorpus exported search results')
     parser.add_argument('--sciencedirect', help='Text file with ScienceDirect exported results')
-    parser.add_argument('--ngrams', dest='ngrams', default=5, help="N-grams to split text to search")
-    parser.add_argument('--similatiry', dest='similarity', default=0.85, help="Minimun similarity to compare papers")
+    parser.add_argument('--ngrams', dest='ngrams', type=int, default=5, help="N-grams to split text to search")
+    parser.add_argument('--similarity', dest='similarity', type=float, default=0.85, help="Minimun similarity to "
+                                                                                          "compare papers")
 
     args = parser.parse_args()
     G = ngram.NGram(N=args.ngrams, threshold=args.similarity)
